@@ -1,146 +1,302 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>生日驚喜</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: "Arial", sans-serif;
-      background: linear-gradient(135deg, #fff1f5, #fff8e7);
-      color: #5b3a3a;
-      text-align: center;
+      min-height: 100vh;
+      font-family: "Noto Sans TC", "Arial", sans-serif;
+      background: linear-gradient(135deg, #fff1f5, #fff8e7, #ffe6ee);
+      color: #5a3a3a;
+      overflow-x: hidden;
+    }
+
+    .page {
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 24px;
+      position: relative;
     }
 
     .card {
-      background: white;
-      width: 88%;
-      max-width: 430px;
-      padding: 35px 25px;
-      border-radius: 28px;
-      box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 30px;
+      padding: 34px 26px;
+      text-align: center;
+      box-shadow: 0 18px 45px rgba(180, 95, 115, 0.2);
+      border: 1px solid rgba(255, 190, 205, 0.55);
+      animation: fadeUp 0.9s ease;
+      position: relative;
+      z-index: 2;
     }
 
     h1 {
-      font-size: 28px;
-      margin-bottom: 12px;
+      margin: 10px 0 12px;
+      font-size: 30px;
+      letter-spacing: 0.5px;
     }
 
     p {
       line-height: 1.8;
       font-size: 16px;
+      margin: 8px 0;
+    }
+
+    .gift {
+      font-size: 58px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .sub {
+      color: #8d6666;
+      font-size: 15px;
     }
 
     input {
-      width: 80%;
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid #e8b8c2;
+      width: 86%;
+      margin-top: 18px;
+      padding: 15px;
+      border-radius: 999px;
+      border: 1.5px solid #f0b8c5;
+      outline: none;
       font-size: 18px;
       text-align: center;
-      margin-top: 15px;
+      color: #5a3a3a;
+      background: #fffafb;
     }
 
-    button {
-      margin-top: 20px;
-      padding: 13px 35px;
+    input:focus {
+      border-color: #e88fa5;
+      box-shadow: 0 0 0 4px rgba(232, 143, 165, 0.16);
+    }
+
+    button, .video-btn {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 14px 34px;
       border: none;
       border-radius: 999px;
-      background: #f6a6b8;
+      background: linear-gradient(135deg, #f49ab0, #f6b7c6);
       color: white;
       font-size: 17px;
+      font-weight: 700;
+      text-decoration: none;
       cursor: pointer;
+      box-shadow: 0 8px 20px rgba(232, 143, 165, 0.35);
+      transition: 0.2s;
     }
 
-    button:hover {
-      background: #ef8fa6;
+    button:hover, .video-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .error {
+      margin-top: 14px;
+      color: #d85c78;
+      font-size: 15px;
+      min-height: 22px;
     }
 
     .hidden {
       display: none;
     }
 
-    .error {
-      color: #d65c70;
-      margin-top: 12px;
-    }
-
-    iframe {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border-radius: 18px;
-      border: none;
-      margin-top: 20px;
+    .countdown {
+      font-size: 72px;
+      font-weight: 800;
+      color: #f08aa2;
+      animation: pop 0.6s ease;
     }
 
     .message {
-      background: #fff5f7;
-      padding: 18px;
-      border-radius: 20px;
       margin-top: 22px;
+      background: #fff4f6;
+      padding: 20px;
+      border-radius: 22px;
+      line-height: 1.9;
       font-size: 16px;
+      border: 1px solid #ffd4dd;
     }
 
-    .heart {
-      font-size: 34px;
+    .heart-title {
+      font-size: 42px;
       animation: beat 1s infinite;
     }
 
+    .small-note {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #9a7777;
+    }
+
+    .heart {
+      position: fixed;
+      top: -20px;
+      color: rgba(245, 126, 156, 0.55);
+      animation: fall linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
     @keyframes beat {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.18); }
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.16);
+      }
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(360deg);
+      }
     }
   </style>
 </head>
+
 <body>
+  <div class="page" id="lockPage">
+    <div class="card">
+      <div class="gift">🎁</div>
+      <h1>To My Love</h1>
+      <p>這份禮物<br>只屬於今天最重要的人 ❤️</p>
+      <p class="sub">請輸入密碼解鎖生日驚喜</p>
 
-  <div class="card" id="lockScreen">
-    <div class="heart">🎁</div>
-    <h1>生日驚喜</h1>
-    <p>這份禮物只有你可以打開 ❤️<br>請輸入密碼解鎖</p>
-
-    <input type="password" id="passwordInput" placeholder="輸入密碼">
-    <br>
-    <button onclick="checkPassword()">解鎖</button>
-
-    <div class="error" id="errorText"></div>
+      <input id="passwordInput" type="password" placeholder="輸入密碼" />
+      <br />
+      <button onclick="checkPassword()">打開禮物</button>
+      <div class="error" id="errorText"></div>
+    </div>
   </div>
 
-  <div class="card hidden" id="surpriseScreen">
-    <div class="heart">🎉</div>
-    <h1>Happy Birthday ❤️</h1>
-    <p>親愛的寶貝，這是我準備給你的一小段影片。</p>
+  <div class="page hidden" id="countdownPage">
+    <div class="card">
+      <p class="sub">禮物正在打開中...</p>
+      <div class="countdown" id="countdown">3</div>
+    </div>
+  </div>
 
-    <iframe 
-      src="https://www.youtube.com/embed/OeaFybyIlbo?autoplay=1&rel=0"
-      allow="autoplay; encrypted-media"
-      allowfullscreen>
-    </iframe>
+  <div class="page hidden" id="surprisePage">
+    <div class="card">
+      <div class="heart-title">❤️</div>
+      <h1>Happy Birthday</h1>
+      <p>My Love</p>
 
-    <div class="message">
-      親愛的寶貝這是我準備給你的一小段影片，希望你有喜歡！<br><br>
-      之後沒有動力的時候都要記得打開來看看呦，愛你！
+      <a
+        class="video-btn"
+        href="https://youtu.be/OeaFybyIlbo?si=rvRjFIFrDzakVYBQ"
+        target="_blank"
+      >
+        點我播放生日影片 🎥
+      </a>
+
+      <div class="message">
+        親愛的寶貝，這是我準備給你的一小段影片，希望你有喜歡！<br><br>
+        之後沒有動力的時候都要記得打開來看看呦，愛你！
+      </div>
+
+      <div class="small-note">
+        這是只屬於你的生日小禮物 🎂
+      </div>
     </div>
   </div>
 
   <script>
-    function checkPassword() {
-      const password = document.getElementById("passwordInput").value;
-      const correctPassword = "5200711";
+    const correctPassword = "5200711";
 
-      if (password === correctPassword) {
-        document.getElementById("lockScreen").classList.add("hidden");
-        document.getElementById("surpriseScreen").classList.remove("hidden");
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value.trim();
+      const error = document.getElementById("errorText");
+
+      if (input === correctPassword) {
+        document.getElementById("lockPage").classList.add("hidden");
+        document.getElementById("countdownPage").classList.remove("hidden");
+        startCountdown();
       } else {
-        document.getElementById("errorText").innerText = "密碼錯誤，再想想看喔 ❤️";
+        error.innerText = "🤔 不對喔～想想我們的重要日子 ❤️";
       }
     }
-  </script>
 
+    function startCountdown() {
+      let num = 3;
+      const countdown = document.getElementById("countdown");
+      countdown.innerText = num;
+
+      const timer = setInterval(() => {
+        num--;
+        if (num > 0) {
+          countdown.innerText = num;
+        } else {
+          clearInterval(timer);
+          document.getElementById("countdownPage").classList.add("hidden");
+          document.getElementById("surprisePage").classList.remove("hidden");
+          createHearts();
+        }
+      }, 900);
+    }
+
+    function createHearts() {
+      for (let i = 0; i < 35; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = Math.random() > 0.5 ? "❤️" : "💕";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = 3 + Math.random() * 4 + "s";
+        heart.style.fontSize = 16 + Math.random() * 22 + "px";
+        heart.style.animationDelay = Math.random() * 2 + "s";
+        document.body.appendChild(heart);
+      }
+    }
+
+    document.getElementById("passwordInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        checkPassword();
+      }
+    });
+  </script>
 </body>
 </html>
